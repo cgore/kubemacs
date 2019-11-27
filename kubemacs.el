@@ -50,16 +50,21 @@
          (k (lambda (keys def)
               (define-key map (kbd keys) def))))
     (funcall k "C" 'kubemacs-select-config)
-    map))
+    map)
+  "Keymap for `kubemacs-mode'.")
 
 (define-derived-mode kubemacs-mode special-mode "Kubemacs"
   "Major Mode for use in the Kubemacs buffer."
+  (setq buffer-read-only t
+        truncate-lines -1
+        cursor-type nil)
   (use-local-map kubemacs-mode-map))
 
 (defun kubemacs ()
   "Kubernetes Emacs UI."
   (interactive)
   (with-current-buffer (kubemacs-buffer)
+    (setq buffer-read-only nil)
     (erase-buffer)
     (let ((conf (kubemacs-selected-config-map)))
       (insert (propertize (format "%s" kubemacs-selected-config-key) 'face 'bold) "\n")
@@ -72,7 +77,7 @@
                     nil t nil
                     "--context" (gethash :context conf)
                     "get" "namespaces"))
-    ;;(kubemacs-mode)
-    ))
+    (setq buffer-read-only t)
+    (kubemacs-mode)))
 
 ;;; kubemacs.el ends here
