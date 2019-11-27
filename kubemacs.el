@@ -24,8 +24,12 @@
   (get-buffer-create kubemacs-buffer-name))
 
 (defvar kubemacs-selected-config-key
-  nil
+  (--> kubemacs-config ht-keys car)
   "This is the currently selected kubemacs configuration.")
+
+(defun kubemacs-selected-config-map ()
+  "Return the currently selected Kubemacs config map."
+  (ht-get kubemacs-config kubemacs-selected-config-key))
 
 (defun kubemacs-select-config ()
   (interactive)
@@ -34,7 +38,8 @@
                                       kubemacs-selected-config-key)
                               (cons "Kubemacs Config Keys"
                                     (--map (cons (format "%s" it) it)
-                                           (ht-keys kubemacs-config)))))))
+                                           (ht-keys kubemacs-config))))))
+  (kubemacs))
 
 (maphash (lambda (config-key config-map)
            (cons (format "%s" :foo) :foo))
@@ -56,20 +61,18 @@
   (interactive)
   (with-current-buffer (kubemacs-buffer)
     (erase-buffer)
-    (maphash (lambda (env-key env-config)
-               (insert (propertize (format "%s" env-key) 'face 'bold) "\n")
-               (insert (propertize "--------------------------------------------------------------\n"
-                                   'face 'bold))
-               (--map (insert "\t" (propertize (format "%s" it) 'face 'bold)
-                              " " (gethash it env-config)
-                              "\n")
-                      '(:kubectl-path :context))
-               (insert (propertize "get namespaces\n" 'face 'italic))
-               (call-process (gethash :kubectl-path env-config)
-                             nil t nil
-                             "--context" (gethash :context env-config)
-                             "get" "namespaces"))
-             kubemacs-config)
-    (kubemacs-mode)))
+    (let ((conf (kubemacs-selected-config-map)))
+      (insert (propertize (format "%s" kubemacs-selected-config-key) 'face 'bold) "\n")
+      (--map (insert "\t" (propertize (format "%s" it) 'face 'bold)
+                     " " (gethash it conf)
+                     "\n")
+             '(:kubectl-path :context))
+      (insert (propertize "get namespaces\n" 'face 'italic))
+      (call-process (gethash :kubectl-path conf)
+                    nil t nil
+                    "--context" (gethash :context conf)
+                    "get" "namespaces"))
+    ;;(kubemacs-mode)
+    ))
 
 ;;; kubemacs.el ends here
