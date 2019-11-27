@@ -33,9 +33,8 @@
         (x-popup-menu t (list (format "Select a new Kubemacs config (currently %s):"
                                       kubemacs-selected-config-key)
                               (cons "Kubemacs Config Keys"
-                                    (mapcar (lambda (config-key)
-                                              (cons (format "%s" config-key) config-key))
-                                            (ht-keys kubemacs-config)))))))
+                                    (--map (cons (format "%s" it) it)
+                                           (ht-keys kubemacs-config)))))))
 
 (maphash (lambda (config-key config-map)
            (cons (format "%s" :foo) :foo))
@@ -61,11 +60,10 @@
                (insert (propertize (format "%s" env-key) 'face 'bold) "\n")
                (insert (propertize "--------------------------------------------------------------\n"
                                    'face 'bold))
-               (mapcar (lambda (config-key)
-                         (insert "\t" (propertize (format "%s" config-key) 'face 'bold)
-                                 " " (gethash config-key env-config)
-                                 "\n"))
-                       '(:kubectl-path :context))
+               (--map (insert "\t" (propertize (format "%s" it) 'face 'bold)
+                              " " (gethash it env-config)
+                              "\n")
+                      '(:kubectl-path :context))
                (insert (propertize "get namespaces\n" 'face 'italic))
                (call-process (gethash :kubectl-path env-config)
                              nil t nil
