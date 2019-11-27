@@ -1,4 +1,11 @@
-;;; kubemacs.el --- Kubernetes Emacs UI
+;;; kubemacs.el --- Kubernetes Emacs UI -*- lexical-binding: t; -*-
+
+;; Copyright (C) 2019 Christopher Mark Gore, all righs reserved.
+
+;; Author: Christopher Mark Gore <cgore@cgore.com>
+;; Version: 0.0.0
+;; Keywords: Kubernetes
+;; Package-Requires: ((ht "2.3"))
 
 ;;; Commentary:
 
