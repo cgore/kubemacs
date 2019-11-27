@@ -64,9 +64,13 @@
     (erase-buffer)
     (let ((conf (kubemacs-selected-config-map)))
       (insert (propertize "Current Kubemacs Config: " 'face 'bold)
-              (format "%s" kubemacs-selected-config-key)
-              (propertize " (C to change)" 'face 'italic)
-              "\n")
+              (format "%s" kubemacs-selected-config-key) " ")
+      (insert-text-button "[change]"
+                          'face 'bold
+                          'help-echo "Change the currently selected Kubemacs config."
+                          :follow-link t
+                          'action `(lambda (button) (kubemacs-select-config)))
+      (insert "\n")
       (--map (insert "\t" (propertize (format "%s" it) 'face 'bold)
                      " " (gethash it conf)
                      "\n")
