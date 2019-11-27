@@ -5,13 +5,16 @@
 ;; Author: Christopher Mark Gore <cgore@cgore.com>
 ;; Version: 0.0.0
 ;; Keywords: Kubernetes
-;; Package-Requires: ((ht "2.3"))
+;; Package-Requires: ((dash "2.16.0") (dash-functional "1.2.0") (emacs "24") (ht "2.3"))
 
 ;;; Commentary:
 
 ;;; Code:
 
-(require 'ht)
+(require 'dash) ; https://github.com/magnars/dash.el
+(require 'dash-functional) ; https://github.com/magnars/dash.el
+(require 'ht) ; https://github.com/Wilfred/ht.el
+(require 's) ; https://github.com/magnars/s.el
 
 (defconst kubemacs-buffer-name "*kubemacs*"
   "This is the buffer name for the standard Kubemacs buffer, defaulting to *kubemacs*.")
