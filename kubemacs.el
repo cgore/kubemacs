@@ -33,13 +33,13 @@
 
 (defun kubemacs-select-config ()
   (interactive)
-  (setq kubemacs-selected-config-key
-        (x-popup-menu t (list (format "Select a new Kubemacs config (currently %s):"
-                                      kubemacs-selected-config-key)
-                              (cons "Kubemacs Config Keys"
-                                    (--map (cons (format "%s" it) it)
-                                           (ht-keys kubemacs-config))))))
-  (kubemacs))
+  (let ((new-key (x-popup-menu t (list (format "Select a new Kubemacs config (currently %s):"
+                                               kubemacs-selected-config-key)
+                                       (cons "" (--map (cons (format "%s" it) it)
+                                                       (ht-keys kubemacs-config)))))))
+    (when new-key
+      (setq kubemacs-selected-config-key new-key)
+      (kubemacs))))
 
 (maphash (lambda (config-key config-map)
            (cons (format "%s" :foo) :foo))
@@ -67,12 +67,15 @@
     (setq buffer-read-only nil)
     (erase-buffer)
     (let ((conf (kubemacs-selected-config-map)))
-      (insert (propertize (format "%s" kubemacs-selected-config-key) 'face 'bold) "\n")
+      (insert (propertize "Current Kubemacs Config: " 'face 'bold)
+              (format "%s" kubemacs-selected-config-key)
+              (propertize " (C to change)" 'face 'italic)
+              "\n")
       (--map (insert "\t" (propertize (format "%s" it) 'face 'bold)
                      " " (gethash it conf)
                      "\n")
              '(:kubectl-path :context))
-      (insert (propertize "get namespaces\n" 'face 'italic))
+      (insert (propertize "Namespaces:\n" 'face 'bold))
       (call-process (gethash :kubectl-path conf)
                     nil t nil
                     "--context" (gethash :context conf)
