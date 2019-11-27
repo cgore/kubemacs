@@ -41,10 +41,6 @@
       (setq kubemacs-selected-config-key new-key)
       (kubemacs))))
 
-(maphash (lambda (config-key config-map)
-           (cons (format "%s" :foo) :foo))
-         kubemacs-config)
-
 (defvar kubemacs-mode-map
   (let* ((map (make-sparse-keymap))
          (k (lambda (keys def)
